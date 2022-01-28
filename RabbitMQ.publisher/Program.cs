@@ -18,7 +18,7 @@ namespace RabbitMQ.publisher
         {
             var factory = new ConnectionFactory();
 
-            factory.Uri = new Uri("amqps://pzzrnikj:ljZ9pbzuot5AdM2C4NSj3tdrTS1HcoLy@baboon.rmq.cloudamqp.com/pzzrnikj");
+            factory.Uri = new Uri("");
 
             //bağlantı oluşturuyoruz
             using var connection = factory.CreateConnection();
@@ -60,7 +60,7 @@ namespace RabbitMQ.publisher
 
             var factory = new ConnectionFactory();
 
-            factory.Uri = new Uri("amqps://pzzrnikj:ljZ9pbzuot5AdM2C4NSj3tdrTS1HcoLy@baboon.rmq.cloudamqp.com/pzzrnikj");
+            factory.Uri = new Uri("");
 
             using var connection = factory.CreateConnection();
 
@@ -89,7 +89,7 @@ namespace RabbitMQ.publisher
 
             var factory = new ConnectionFactory();
 
-            factory.Uri = new Uri("amqps://pzzrnikj:ljZ9pbzuot5AdM2C4NSj3tdrTS1HcoLy@baboon.rmq.cloudamqp.com/pzzrnikj");
+            factory.Uri = new Uri("");
 
             using var connection = factory.CreateConnection();
 
