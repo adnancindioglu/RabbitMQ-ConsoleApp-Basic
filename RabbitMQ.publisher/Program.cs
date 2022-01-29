@@ -1,5 +1,6 @@
 ﻿using RabbitMQ.Client;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -175,6 +176,29 @@ namespace RabbitMQ.publisher
             //topicte routerkey lere göre gönderim yapılıyordu
             //header ise header bilgisine göre gönderim yapılıyor
             //header bilgileri key value şeklinde gönderiliyor
+
+            var factory = new ConnectionFactory();
+
+            factory.Uri = new Uri("");
+
+            using var connection = factory.CreateConnection();
+
+            var channel = connection.CreateModel();
+
+            channel.ExchangeDeclare("header-exchange", type: ExchangeType.Headers, durable: true);
+
+            Dictionary<string, object> headers = new Dictionary<string, object>();
+            headers.Add("format", "pdf");
+            headers.Add("shape", "a4");
+
+            var properties = channel.CreateBasicProperties();
+            properties.Headers = headers;
+
+            channel.BasicPublish("header-exchange", string.Empty, properties, Encoding.UTF8.GetBytes("header mesajı"));
+
+            Console.WriteLine("Mesaj gönderilmiştir");
+
+            Console.ReadLine();
         }
 
         public enum LogNames
