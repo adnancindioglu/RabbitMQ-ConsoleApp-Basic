@@ -9,9 +9,11 @@ namespace RabbitMQ.publisher
     {
         static void Main(string[] args)
         {
-            NotExchange();
+            //NotExchange();
             //FanoutExchange();
             //DirectExchange();
+            //TopicExchange();
+            HeaderExchange();
         }
 
         private static void NotExchange()
@@ -125,6 +127,54 @@ namespace RabbitMQ.publisher
             });
 
             Console.ReadLine();
+        }
+
+        private static void TopicExchange()
+        {
+            //direct benzer fakat routeKey gönderim şekli, farklı
+            //routeKey ler birden fazla olabilir
+            //routeKey kullanımı "Critical.Warning.Error" şeklinde üç key tek key ile tanımlanabilinir
+            //alıcı tarafında "Critical.Warning.Error" veya "*.Warning.*" şeklinde olabilir * herhangibir değer anlamına gelir
+            // * dışında # ilede kullanılı "#.Error" sonu error olanları getir
+            //çok fazla varyasyon olduğu için kuyruklar subscriber tarafında oluşturulması daha iyi olabilir
+
+            var factory = new ConnectionFactory();
+
+            factory.Uri = new Uri("");
+
+            using var connection = factory.CreateConnection();
+
+            var channel = connection.CreateModel();
+
+            channel.ExchangeDeclare("logs-topic", type: ExchangeType.Topic, durable: true);
+
+            Random rdm = new Random();
+
+            Enumerable.Range(1, 50).ToList().ForEach(x =>
+            {
+                LogNames log1 = (LogNames)rdm.Next(1, 5);
+                LogNames log2 = (LogNames)rdm.Next(1, 5);
+                LogNames log3 = (LogNames)rdm.Next(1, 5);
+
+                var routeKey = $"{log1}.{log2}.{log3}";
+
+                string message = $"log-type: {log1}-{log2}-{log3}";
+
+                byte[] messageBody = Encoding.UTF8.GetBytes(message);
+
+                channel.BasicPublish("logs-topic", routeKey, null, messageBody);
+
+                Console.WriteLine($"Log Gönderilmiştir: {message}");
+            });
+
+            Console.ReadLine();
+        }
+
+        private static void HeaderExchange()
+        {
+            //topicte routerkey lere göre gönderim yapılıyordu
+            //header ise header bilgisine göre gönderim yapılıyor
+            //header bilgileri key value şeklinde gönderiliyor
         }
 
         public enum LogNames
